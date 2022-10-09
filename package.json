@@ -1,0 +1,28 @@
+{
+  "name": "sde_lab_group7",
+  "version": "1.0.0",
+  "description": "GraphQL vs REST",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vicentinileonardo/SDE_Lab_group7.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vicentinileonardo/SDE_Lab_group7/issues"
+  },
+  "homepage": "https://github.com/vicentinileonardo/SDE_Lab_group7#readme",
+  "dependencies": {
+    "apollo-server": "^3.10.3",
+    "apollo-server-core": "^3.10.3",
+    "graphql": "^16.6.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
