@@ -1,9 +1,16 @@
 const { ApolloServer } = require('apollo-server');
 const { ApolloServerPluginLandingPageLocalDefault } = require('apollo-server-core');
+const movies = require('./movies');
 
 const resolvers = {
+  Movie: {
+    year: (movie) => movie.year
+  },
   Query: {
-    movies: () => [],
+    movies: () => [{
+      title: 'xdxx',
+      year: new Date('2022-01-01')
+    }],
   },
   Mutation: {
     addMovie: (_, { title }) => ({
@@ -25,6 +32,8 @@ const server = new ApolloServer({
   ],
 });
 
-server.listen().then(({ url }) => {
-  console.log(`🚀  Server ready at ${url}`);
+server.listen(4000).then(({ url }) => {
+  console.log(`Apollo ready at ${url}`);
 });
+
+require('./expressApp')();
