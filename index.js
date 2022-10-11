@@ -8,7 +8,7 @@ const resolvers = {
   },
   Query: {
     highlightedMovies: getHighlightedMovies,
-    movies: (_, {page}) => getMoviesPage(page)
+    movies: (_, { page }) => getMoviesPage(page)
   },
   Mutation: {
     addMovie: (_, { title }) => ({

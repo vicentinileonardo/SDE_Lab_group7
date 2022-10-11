@@ -88,7 +88,7 @@ const schema = `
         cast: [Actor!]!
         year: Date!
         duration: Int
-        genre: Genre
+        genres: [Genre!]!
     }
     
     type Query {
