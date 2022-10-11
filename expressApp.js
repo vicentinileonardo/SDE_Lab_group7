@@ -1,17 +1,22 @@
 const expressApp = require('express');
 const app = expressApp();
-const { getAllMovies, getHighlightedMovies, getMoviesPage} = require('./movies');
+const { getAllMovies, getHighlightedMovies, getMoviesPage, getAllGenres } = require('./movies');
 
 app.get('/movies', (req, res) => {
   res.json(getHighlightedMovies());
 });
 
-app.get('/movies/page/:page', (req, res) => {
-    const page = parseInt(req.params.page);
-    if(page)
+app.get('/movies/page/:page?', (req, res) => {
+    let page = parseInt(req.params.page);
+    if(!page) page = 0;
+    if(page >= 0)
       res.json(getMoviesPage(page));
     else
       res.status(400).send('Invalid page number');
+});
+
+app.get('/movies/genres', (req, res) => {
+  res.send(getAllGenres());
 });
 
 

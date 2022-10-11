@@ -12,9 +12,47 @@ const schema = `
     scalar Date
     
     enum Genre {
-        SCI_FI
-        FANTASY
-        HORROR
+        Short
+        Documentary
+        Comedy
+        Western
+        Adventure
+        Romance
+        Crime
+        Drama
+        Action
+        Animated
+        Historical
+        Biography
+        Horror
+        Fantasy
+        Silent
+        Sports
+        Thriller
+        War
+        Mystery
+        Erotic
+        Spy
+        Family
+        Science_Fiction
+        Musical
+        Sport
+        Noir
+        Suspense
+        Live_Action
+        Disaster
+        Teen
+        Political
+        Satire
+        Slasher
+        Martial_Arts
+        Performance
+        Superhero
+        Independent
+        Dance
+        Supernatural
+        Legal
+        Found_Footage
     }
     
     interface Person {
