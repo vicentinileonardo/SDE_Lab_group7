@@ -2,11 +2,11 @@ const expressApp = require('express');
 const app = expressApp();
 const { getAllMovies, getHighlightedMovies, getMoviesPage} = require('./movies');
 
-app.get('/', (req, res) => {
+app.get('/movies', (req, res) => {
   res.json(getHighlightedMovies());
 });
 
-app.get('/page/:page', (req, res) => {
+app.get('/movies/page/:page', (req, res) => {
     const page = parseInt(req.params.page);
     if(page)
       res.json(getMoviesPage(page));
