@@ -1,6 +1,6 @@
 const { ApolloServer } = require('apollo-server');
 const { ApolloServerPluginLandingPageLocalDefault } = require('apollo-server-core');
-const movies = require('./movies');
+const { getAllMovies, getHighlightedMovies } = require('./movies');
 
 const resolvers = {
   Movie: {
