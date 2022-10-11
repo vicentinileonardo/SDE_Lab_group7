@@ -1,16 +1,14 @@
 const { ApolloServer } = require('apollo-server');
 const { ApolloServerPluginLandingPageLocalDefault } = require('apollo-server-core');
-const { getAllMovies, getHighlightedMovies } = require('./movies');
+const { getHighlightedMovies, getMoviesPage } = require('./movies');
 
 const resolvers = {
   Movie: {
     year: (movie) => movie.year
   },
   Query: {
-    movies: () => [{
-      title: 'xdxx',
-      year: new Date('2022-01-01')
-    }],
+    highlightedMovies: getHighlightedMovies,
+    movies: (_, {page}) => getMoviesPage(page)
   },
   Mutation: {
     addMovie: (_, { title }) => ({
