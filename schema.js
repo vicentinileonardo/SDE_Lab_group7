@@ -54,7 +54,8 @@ const schema = `
     }
     
     type Query {
-        movies: [Movie]
+        highlightedMovies: [Movie!]!,
+        movies(page: Int! = 0): [Movie!]!
     }
     
     type Mutation {

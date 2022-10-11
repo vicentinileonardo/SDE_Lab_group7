@@ -1,6 +1,6 @@
 const expressApp = require('express');
 const app = expressApp();
-const { getAllMovies, getHighlightedMovies, getMoviesPage} = require('./movies');
+const { getHighlightedMovies, getMoviesPage} = require('./movies');
 
 app.get('/movies', (req, res) => {
   res.json(getHighlightedMovies());
