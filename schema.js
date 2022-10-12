@@ -71,16 +71,15 @@ const schema = `
     type ActorDirector implements Person & ActorInterface {
         ${personFields}
         ${actorFields}
-        directed: [Movie!]!
+        directedMovies: [Movie!]!
     }
     
-    type NonActorDirector implements Person & ActorInterface {
+    type NonActorDirector implements Person {
         ${personFields}
-        ${actorFields}
-        bo: String
+        directedMovies: [Movie!]!
     }
 
-    union Director = Actor | NonActorDirector
+    union Director = ActorDirector | NonActorDirector
     
     type Review {
         review: String!

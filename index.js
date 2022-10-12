@@ -6,7 +6,7 @@ const resolvers = {
   Director: {
     __resolveType: director => {
       if (!director._typename)
-        director._typename = 'Actor';
+        director._typename = 'ActorDirector';
       return director._typename;
     }
   },
