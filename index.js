@@ -1,10 +1,17 @@
 const { ApolloServer } = require('apollo-server');
 const { ApolloServerPluginLandingPageLocalDefault } = require('apollo-server-core');
-const { getHighlightedMovies, getMoviesPage } = require('./movies');
+const { getHighlightedMovies, getMoviesPage, getMovieDirectors} = require('./movies');
 
 const resolvers = {
+  Director: {
+    __resolveType: director => {
+      if (!director._typename)
+        director._typename = 'Actor';
+      return director._typename;
+    }
+  },
   Movie: {
-    year: (movie) => movie.year
+    directors: movie => getMovieDirectors(movie.id)
   },
   Query: {
     highlightedMovies: getHighlightedMovies,
