@@ -1,4 +1,4 @@
-const { readFileSync } = require('fs');
+const { readFileSync, writeFile } = require('fs');
 
 const NON_ACTOR_DIRECTORS = [
   {
@@ -59,9 +59,7 @@ const NON_ACTOR_DIRECTORS = [
   },
 ];
 
-ACTORS = [
-
-];
+const reviews = JSON.parse(readFileSync('./reviews.json').toString());
 
 let movies, genres = {}, directors = [];
 if(!movies) {
@@ -96,13 +94,20 @@ if(!movies) {
 }
 
 const PAGE_SIZE = 20;
-console.log(movies.findIndex(m => m.cast.length > 3))
-console.log(movies.slice(361))
 
-const getHighlightedMovies = _ => movies.slice(0, 10);
-const getMoviesPage = page => movies.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
-const getAllMovies = _ => movies;
-const getAllGenres = _ => Object.keys(genres).map(g => g).join('\n');
-const getMovieDirectors = movieID => directors[movieID];
-
-module.exports = { getAllMovies, getHighlightedMovies, getMoviesPage, getAllGenres, getMovieDirectors };
+module.exports = {
+  getMovie: movieID => movies[movieID],
+  getHighlightedMovies: _ => movies.slice(0, 10),
+  getMoviesPage: page => movies.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE),
+  getAllMovies: _ => movies,
+  getAllGenres: _ => Object.keys(genres).map(g => g).join('\n'),
+  getMovieDirectors: movieID => new Promise(r => setTimeout(_ => r(directors[movieID]), 2000)),
+  getMovieReviews: movieID => reviews[movieID] || [],
+  newMovieReview: ({ movieID, review }) => {
+    if(!movies[movieID]) throw new Error('Invalid movieID: ' + movieID);
+    if(!review || review.length === 0) throw new Error('Invalid review: ' + review);
+    if(!reviews[movieID]) reviews[movieID] = [];
+    reviews[movieID].push({ review });
+    writeFile('./reviews.json', JSON.stringify(reviews), err => console.log(err))
+  }
+};

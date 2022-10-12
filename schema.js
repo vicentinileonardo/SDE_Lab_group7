@@ -82,6 +82,10 @@ const schema = `
 
     union Director = Actor | NonActorDirector
     
+    type Review {
+        review: String!
+    }
+    
     type Movie {
         title: String!
         directors: [Director!]!
@@ -89,6 +93,7 @@ const schema = `
         year: Date!
         duration: Int
         genres: [Genre!]!
+        reviews: [Review!]!
     }
     
     type Query {
@@ -97,7 +102,7 @@ const schema = `
     }
     
     type Mutation {
-        addMovie(title: String!): Movie!
+        reviewMovie(movieID: Int!, review: String!): Movie!
     }
 `
 module.exports = schema;

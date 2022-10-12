@@ -1,6 +1,6 @@
 const { ApolloServer } = require('apollo-server');
 const { ApolloServerPluginLandingPageLocalDefault } = require('apollo-server-core');
-const { getHighlightedMovies, getMoviesPage, getMovieDirectors} = require('./movies');
+const { getHighlightedMovies, getMoviesPage, getMovieDirectors, getMovieReviews, newMovieReview, getMovie} = require('./movies');
 
 const resolvers = {
   Director: {
@@ -11,19 +11,21 @@ const resolvers = {
     }
   },
   Movie: {
-    directors: movie => getMovieDirectors(movie.id)
+    directors: movie => getMovieDirectors(movie.id),
+    reviews: movie => getMovieReviews(movie.id)
   },
   Query: {
     highlightedMovies: getHighlightedMovies,
-    movies: (_, { page }) => getMoviesPage(page)
+    movies: (_, { page }) => {
+      if(page < 0) throw new Error('Invalid page number');
+      return getMoviesPage(page);
+    }
   },
   Mutation: {
-    addMovie: (_, { title }) => ({
-      title: title || 'Def',
-      directors: [],
-      cast: [],
-      year: new Date()
-    })
+    reviewMovie: (_, params) => {
+      newMovieReview(params);
+      return { ...getMovie(params.movieID), reviews: getMovieReviews(params.movieID) };
+    }
   }
 };
 
