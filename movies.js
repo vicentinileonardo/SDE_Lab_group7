@@ -96,8 +96,8 @@ if(!movies) {
 }
 
 const PAGE_SIZE = 20;
-console.log(movies.findIndex(m => m.cast.length > 3))
-console.log(movies.slice(361))
+//console.log(movies.findIndex(m => m.cast.length > 3))
+//console.log(movies.slice(361))
 
 const getHighlightedMovies = _ => movies.slice(0, 10);
 const getMoviesPage = page => movies.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
