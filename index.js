@@ -1,8 +1,9 @@
 const { ApolloServer } = require('apollo-server');
 const { ApolloServerPluginLandingPageLocalDefault } = require('apollo-server-core');
 const { getHighlightedMovies, getMoviesPage, getMovieDirectors, getMovieReviews, newMovieReview, getMovie} = require('./movies');
-const {GraphQLScalarType} = require('graphql/type');
-const {Kind} = require('graphql/language');
+const { GraphQLScalarType } = require('graphql/type');
+const { GraphQLError } = require('graphql/error');
+const {readFileSync} = require('fs');
 
 const resolvers = {
   Director: {
@@ -21,7 +22,8 @@ const resolvers = {
     movies: (_, { page }) => {
       if(page < 0) throw new Error('Invalid page number');
       return getMoviesPage(page);
-    }
+    },
+    auth: (_, __, context) => context.username
   },
   Mutation: {
     reviewMovie: (_, params) => {
@@ -31,16 +33,15 @@ const resolvers = {
   },
   Date: new GraphQLScalarType({
     name: 'Date',
-    parseValue: value => new Date(value + ''), // value from the client
-    serialize: value => value.toISOString().substring(0, 10), // value sent to the client
-    parseLiteral: ast => ast.kind === Kind.INT ? new Date(+ast.value) : null // ast value is always in string format
+    parseValue: value => new Date(+value), // value from the client
+    serialize: value => value.toISOString().substring(0, 10), // value sent as variable
+    parseLiteral: ast => new Date(+ast) // value sent as inline value
   }),
-
   Datetime: new GraphQLScalarType({
     name: 'Datetime',
-    parseValue: value => new Date(value + ''), // value from the client
-    serialize: value => value.toISOString(), // value sent to the client
-    parseLiteral: ast => ast.kind === Kind.INT ? new Date(+ast.value) : null // ast value is always in string format
+    parseValue: value => new Date(+value), // value from the client
+    serialize: value => value.toISOString(), // value sent as variable
+    parseLiteral: ast => new Date(+ast) // value sent as inline value
   })
 };
 
@@ -52,6 +53,32 @@ const server = new ApolloServer({
   plugins: [
     ApolloServerPluginLandingPageLocalDefault({ embed: true }),
   ],
+  context: async ({ req }) => {
+    let userAuth = req.header('Authorization');
+    if(!userAuth)
+      throw new GraphQLError('Authorization not sent', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+          http: { status: 401 },
+        }
+      });
+
+    userAuth = userAuth.split(' ')[1];
+
+    const auths = JSON.parse(readFileSync('./auths.json').toString());
+
+    if(!auths || !auths[+userAuth])
+      throw new GraphQLError('User is not authenticated', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+          http: { status: 401 },
+        }
+      });
+
+    console.log('Auth OK ', +userAuth, auths[+userAuth]);
+
+    return { username: auths[+userAuth] };
+  },
 });
 
 server.listen(4000).then(({ url }) => {

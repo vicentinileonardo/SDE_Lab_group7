@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Tests</title>
@@ -16,7 +16,7 @@
         code {
             font-size: 1.2rem;
         }
-        button {
+        button, input {
             font-size: 1.5rem;
         }
         p, pre {
@@ -30,11 +30,15 @@
         }
     </style>
     <script defer>
+      window.getCookie = function(name) {
+        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        if (match) return match[2];
+      }
       async function movies(page = null) {
         console.log((await (fetch('http://localhost:3000/movies').then(r => r.json()))))
         console.log((await (fetch('http://localhost:4000/', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', Authorization: 'Basic '+getCookie('auth') },
           body: JSON.stringify({
             operationName: page === null ? 'highlighted' : 'movies',
             query: `
@@ -52,9 +56,28 @@
                 }
             `,
             variables: page === null ? { } : { page }
-          }),
+          })
         }).then(r => r.json()))))
       }
+      async function auth() {
+        await (fetch('http://localhost:4000/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: 'Basic '+getCookie('auth') },
+          body: JSON.stringify({
+            query: `
+                {
+                  auth
+                }
+            `
+          })
+        }).then(r => r.json()).then(r => alert('Username: ' + r.data.auth)));
+      }
+      window.addEventListener("DOMContentLoaded", function() {
+        document.getElementById('authForm').addEventListener("submit", function(e) {
+          e.preventDefault();
+          fetch('http://localhost:3000/auth?username='+document.getElementById('username').value);
+        })
+      });
     </script>
 </head>
 <body>
@@ -64,6 +87,14 @@
     <div class="h-flex">
         <button onclick="movies()">Movies</button>
         <button onclick="movies(1)">Movies page 1</button>
+    </div>
+
+    <div class="h-flex">
+        <form id="authForm">
+            <label for="username">Authentication:</label>
+            <input id="username" required placeholder="Username..."/>
+        </form>
+        <button onclick="auth()">Get auth username</button>
     </div>
 
     <pre>

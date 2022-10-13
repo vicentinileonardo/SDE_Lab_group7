@@ -8,6 +8,10 @@ const actorFields = `
     appearedIn: [Movie!]!
 `
 
+const directorFields = `
+    directedMovies: [Movie!]!
+`
+
 const schema = `
     scalar Datetime
     scalar Date
@@ -72,12 +76,12 @@ const schema = `
     type ActorDirector implements Person & ActorInterface {
         ${personFields}
         ${actorFields}
-        directedMovies: [Movie!]!
+        ${directorFields}
     }
     
     type NonActorDirector implements Person {
         ${personFields}
-        directedMovies: [Movie!]!
+        ${directorFields}
     }
 
     union Director = ActorDirector | NonActorDirector
@@ -100,6 +104,7 @@ const schema = `
     type Query {
         highlightedMovies: [Movie!]!,
         movies(page: Int! = 0): [Movie!]!
+        auth: String!
     }
     
     type Mutation {

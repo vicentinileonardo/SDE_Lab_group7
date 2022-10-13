@@ -1,6 +1,21 @@
-const expressApp = require('express');
-const app = expressApp();
+const express = require('express');
+const app = express();
+const cookieParser = require('cookie-parser');
 const { getHighlightedMovies, getMoviesPage, getAllGenres } = require('./movies');
+const { readFileSync, writeFile } = require('fs');
+
+const auths = JSON.parse(readFileSync('./auths.json').toString());
+
+app.use(cookieParser());
+
+app.get('/auth', (req, res) => {
+  let randomNumber = Math.random().toString();
+  randomNumber = randomNumber.substring(2, randomNumber.length);
+  res.cookie('auth', randomNumber, { maxAge: 900000, domain: 'localhost', path: '/' });
+  auths[+randomNumber] = req.query.username;
+  writeFile('./auths.json', JSON.stringify(auths), err => console.log(err));
+  res.send('OK');
+});
 
 app.get('/', (req, res) => {
   res.sendFile('./tests.html', {root: __dirname })
