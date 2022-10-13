@@ -9,6 +9,7 @@ const actorFields = `
 `
 
 const schema = `
+    scalar Datetime
     scalar Date
     
     enum Genre {
@@ -83,13 +84,14 @@ const schema = `
     
     type Review {
         review: String!
+        when: Datetime!
     }
     
     type Movie {
         title: String!
         directors: [Director!]!
         cast: [Actor!]!
-        year: Date!
+        year: Int!
         duration: Int
         genres: [Genre!]!
         reviews: [Review!]!

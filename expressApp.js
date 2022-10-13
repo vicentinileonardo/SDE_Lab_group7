@@ -2,8 +2,12 @@ const expressApp = require('express');
 const app = expressApp();
 const { getHighlightedMovies, getMoviesPage, getAllGenres } = require('./movies');
 
+app.get('/', (req, res) => {
+  res.sendFile('./tests.html', {root: __dirname })
+});
+
 app.get('/movies', (req, res) => {
-  res.json(getHighlightedMovies());
+  res.status(200).json(getHighlightedMovies());
 });
 
 app.get('/movies/page/:page?', (req, res) => {

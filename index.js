@@ -1,6 +1,8 @@
 const { ApolloServer } = require('apollo-server');
 const { ApolloServerPluginLandingPageLocalDefault } = require('apollo-server-core');
 const { getHighlightedMovies, getMoviesPage, getMovieDirectors, getMovieReviews, newMovieReview, getMovie} = require('./movies');
+const {GraphQLScalarType} = require('graphql/type');
+const {Kind} = require('graphql/language');
 
 const resolvers = {
   Director: {
@@ -26,7 +28,20 @@ const resolvers = {
       newMovieReview(params);
       return { ...getMovie(params.movieID), reviews: getMovieReviews(params.movieID) };
     }
-  }
+  },
+  Date: new GraphQLScalarType({
+    name: 'Date',
+    parseValue: value => new Date(value + ''), // value from the client
+    serialize: value => value.toISOString().substring(0, 10), // value sent to the client
+    parseLiteral: ast => ast.kind === Kind.INT ? new Date(+ast.value) : null // ast value is always in string format
+  }),
+
+  Datetime: new GraphQLScalarType({
+    name: 'Datetime',
+    parseValue: value => new Date(value + ''), // value from the client
+    serialize: value => value.toISOString(), // value sent to the client
+    parseLiteral: ast => ast.kind === Kind.INT ? new Date(+ast.value) : null // ast value is always in string format
+  })
 };
 
 const server = new ApolloServer({

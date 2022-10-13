@@ -60,6 +60,10 @@ const NON_ACTOR_DIRECTORS = [
 ];
 
 const reviews = JSON.parse(readFileSync('./reviews.json').toString());
+for (const k in reviews) {
+  reviews[k] = reviews[k].map(r => ({ review: r.review, when: new Date(r.when) }));
+}
+console.log(reviews)
 
 let movies, genres = {}, directors = [];
 if(!movies) {
@@ -107,7 +111,7 @@ module.exports = {
     if(!movies[movieID]) throw new Error('Invalid movieID: ' + movieID);
     if(!review || review.length === 0) throw new Error('Invalid review: ' + review);
     if(!reviews[movieID]) reviews[movieID] = [];
-    reviews[movieID].push({ review });
+    reviews[movieID].push({ review, when: new Date() });
     writeFile('./reviews.json', JSON.stringify(reviews), err => console.log(err))
   }
 };
