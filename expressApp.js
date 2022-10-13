@@ -9,8 +9,7 @@ const auths = JSON.parse(readFileSync('./auths.json').toString());
 app.use(cookieParser());
 
 app.get('/auth', (req, res) => {
-  let randomNumber = Math.random().toString();
-  randomNumber = randomNumber.substring(2, randomNumber.length);
+  let randomNumber = parseInt((Math.random() * 1000000) + '') + '';
   res.cookie('auth', randomNumber, { maxAge: 900000, domain: 'localhost', path: '/' });
   auths[+randomNumber] = req.query.username;
   writeFile('./auths.json', JSON.stringify(auths), err => console.log(err));
