@@ -1,11 +1,11 @@
 const { ApolloServer } = require('apollo-server');
 const { ApolloServerPluginLandingPageLocalDefault } = require('apollo-server-core');
 const { getHighlightedMovies, getMoviesPage, getMovieDirectors, getMovieReviews, newMovieReview, getMovie } = require('./movies');
-const { getUsername } = require('./auth');
+const { getAuthContext } = require('./auth');
 const { GraphQLScalarType } = require('graphql/type');
 const { GraphQLError } = require('graphql/error');
 
-const SKIP_AUTH = false;
+const SKIP_AUTH = true;
 
 const resolvers = {
   Director: {
@@ -57,39 +57,9 @@ const server = new ApolloServer({
   ],
   context: async ({ req }) => {
     if(SKIP_AUTH) return { };
-
-    let userAuth = req.header('Authorization');
-    if(!userAuth)
-      throw new GraphQLError('Authorization not sent', {
-        extensions: {
-          code: 'UNAUTHENTICATED',
-          http: { status: 401 },
-        }
-      });
-
-    userAuth = userAuth.split(' ');
-
-    if(userAuth[0] !== 'Basic')
-      throw new GraphQLError('Authorization wrong format', {
-        extensions: {
-          code: 'UNAUTHENTICATED',
-          http: { status: 401 },
-        }
-      });
-
-    const username = getUsername(userAuth[1]);
-
-    if(!username)
-      throw new GraphQLError('Wrong credentials', {
-        extensions: {
-          code: 'UNAUTHENTICATED',
-          http: { status: 401 },
-        }
-      });
-
-    console.log('Auth OK ', +userAuth, username);
-
-    return { username };
+    const authContext = getAuthContext(req);
+    console.log('Auth OK ', authContext);
+    return authContext;
   },
 });
 

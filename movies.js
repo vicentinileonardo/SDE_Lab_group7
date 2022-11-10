@@ -109,6 +109,6 @@ module.exports = {
     if(!review || review.length === 0) throw new Error('Invalid review: ' + review);
     if(!reviews[movieID]) reviews[movieID] = [];
     reviews[movieID].push({ review, when: new Date() });
-    writeFile('./reviews.json', JSON.stringify(reviews), err => console.log(err))
+    writeFile('./reviews.json', JSON.stringify(reviews), err => console.log(err));
   }
 };

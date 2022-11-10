@@ -19,14 +19,29 @@
         button, input {
             font-size: 1.5rem;
         }
-        p, pre {
+        pre {
             margin: .5rem;
+            font-size: 12px;
+            max-height: 60vh;
+            overflow: auto;
+            resize: both;
+            background-color: darkcyan;
         }
         .h-flex {
             margin-top: 1rem;
             display: flex;
             flex-direction: row;
             justify-content: space-evenly;
+        }
+        .v-flex {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+        }
+        p {
+            text-align: center;
+            font-size: 1.2rem;
         }
     </style>
     <script defer>
@@ -35,8 +50,11 @@
         if (match) return match[2];
       }
       async function movies(page = null) {
-        console.log((await (fetch('http://localhost:3000/movies').then(r => r.json()))))
-        console.log((await (fetch('http://localhost:4000/', {
+        const restResp = (await (fetch('http://localhost:3000/movies'+(page ? '/page/'+page : '')).then(r => r.json())));
+        document.getElementById('restResponse').innerText = JSON.stringify(restResp, undefined, 2);
+        console.log(restResp);
+
+        const gqlResp = (await (fetch('http://localhost:4000/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: 'Basic '+getCookie('auth') },
           body: JSON.stringify({
@@ -46,18 +64,22 @@
                     highlightedMovies {
                         title
                         genres
+                        year
                     }
                 }
                 query movies($page: Int!) {
                     movies(page: $page) {
                         title
                         genres
+                        year
                     }
                 }
             `,
             variables: page === null ? { } : { page }
           })
-        }).then(r => r.json()))))
+        }).then(r => r.json())));
+        document.getElementById('gqlResponse').innerText = JSON.stringify(gqlResp, undefined, 2);
+        console.log(gqlResp);
       }
       async function auth() {
         await (fetch('http://localhost:4000/', {
@@ -84,49 +106,31 @@
     <p>In this page you can send a request both to GraphQL and REST.</p>
     <p>In DEV TOOLS (network tab) you can see how requests are made.</p>
 
+    <h3>REST requests</h3>
     <div class="h-flex">
         <button onclick="movies()">Movies</button>
         <button onclick="movies(1)">Movies page 1</button>
     </div>
-
     <div class="h-flex">
-        <form id="authForm">
-            <label for="username">Authentication:</label>
-            <input id="username" required placeholder="Username..."/>
-        </form>
-        <button onclick="auth()">Get auth username</button>
+        <div>
+            <h6>REST</h6>
+            <pre id="restResponse"></pre>
+        </div>
+        <div>
+            <h6>GraphQL</h6>
+            <pre id="gqlResponse"></pre>
+        </div>
     </div>
 
-    <pre>
-        <code>
-async function movies(page = null) {
-    console.log((await (fetch('http://localhost:3000/movies').then(r => r.json()))));
-    console.log((await (fetch('http://localhost:4000/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            operationName: page === null ? 'highlighted' : 'movies',
-            query: `
-                query highlighted{
-                    highlightedMovies {
-                        title
-                        genres
-                    }
-                }
-                query movies($page: Int!) {
-                    movies(page: $page) {
-                        title
-                        genres
-                    }
-                }
-            `,
-            variables: page === null ? { } : { page }
-        }),
-    }).then(r => r.json()))));
-}
-        </code>
-    </pre>
+    <h3>Authentication</h3>
 
+    <div class="h-flex">
+        <form id="authForm" onsubmit="auth()">
+            <label for="username">Authentication:</label>
+            <input id="username" required placeholder="Username..."/>
+            <button type="submit">>Get auth username</button>
+        </form>
+    </div>
 
 </body>
 </html>
