@@ -24,7 +24,7 @@ app.get('/movies', (req, res) => {
   res.status(200).json(getHighlightedMovies());
 });
 
-app.get('/movies/page/:page?', (req, res) => {
+app.get('/movies/page/:page?', (req, res) => {      // TODO Exercise 1.2b
     let page = parseInt(req.params.page);
     if(!page) page = 0;
     if(page >= 0)

@@ -20,17 +20,23 @@ const resolvers = {
     reviews: movie => getMovieReviews(movie.id)
   },
   Query: {
-    highlightedMovies: getHighlightedMovies,
+    highlightedMovies: getHighlightedMovies,                  // TODO Exercise 1.1
     movies: (_, { page }) => {
-      if(page < 0) throw new Error('Invalid page number');
+      if(page < 0) throw new Error('Invalid page number');    // TODO Exercise 1.2a
       return getMoviesPage(page);
     },
-    auth: (_, __, context) => context.username
+    auth: (_, __, context) => ({                              // TODO Mini-assignment 4
+      username: context.username,
+      secretWord: context.secretWord
+    })
   },
   Mutation: {
-    reviewMovie: (_, params) => {
+    reviewMovie: (_, params) => {                             // TODO Exercise 2
       newMovieReview(params);
-      return { ...getMovie(params.movieID), reviews: getMovieReviews(params.movieID) };
+      return {                                                // TODO Exercise 2b
+        ...getMovie(params.movieID),
+        reviews: getMovieReviews(params.movieID)
+      };
     }
   },
   Date: new GraphQLScalarType({
@@ -55,11 +61,9 @@ const server = new ApolloServer({
   plugins: [
     ApolloServerPluginLandingPageLocalDefault({ embed: true }),
   ],
-  context: async ({ req }) => {
+  context: async ({ req }) => {                       // TODO Mini-assignment 1
     if(SKIP_AUTH) return { };
-    const authContext = getAuthContext(req);
-    console.log('Auth OK ', authContext);
-    return authContext;
+    return getAuthContext(req);
   },
 });
 

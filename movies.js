@@ -100,7 +100,6 @@ module.exports = {
   getMovie: movieID => movies[movieID],
   getHighlightedMovies: _ => movies.slice(0, 10),
   getMoviesPage: page => movies.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE),
-  getAllMovies: _ => movies,
   getAllGenres: _ => Object.keys(genres).map(g => g).join('\n'),
   getMovieDirectors: movieID => new Promise(r => setTimeout(_ => r(directors[movieID]), 2000)),
   getMovieReviews: movieID => reviews[movieID] || [],

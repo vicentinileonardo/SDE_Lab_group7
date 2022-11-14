@@ -1,5 +1,5 @@
 ## Commands
-Start dev sever (nodemon):
+Start dev sever: both GraphQL and REST (nodemon):
 
 `
 npm run dev
