@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const cookieParser = require('cookie-parser');
-const { getHighlightedMovies, getMoviesPage, getAllGenres } = require('./movies');
+const { getHighlightedMovies, getMoviesPage, getAllGenres, getMovieReviews, getMovieDirectors} = require('./movies');
 const { readFileSync, writeFile } = require('fs');
 
 const auths = JSON.parse(readFileSync('./auths.json').toString());
@@ -20,15 +20,23 @@ app.get('/', (req, res) => {
   res.sendFile('./tests.html', {root: __dirname })
 });
 
-app.get('/movies', (req, res) => {
-  res.status(200).json(getHighlightedMovies());
+app.get('/movies', async (req, res) => {
+  res.status(200).json(await Promise.all(getHighlightedMovies().map(async m => {
+    m.reviews = getMovieReviews(m.id);
+    m.directors = await getMovieDirectors(m.id);
+    return m;
+  })));
 });
 
-app.get('/movies/page/:page?', (req, res) => {      // TODO Exercise 1.2b
+app.get('/movies/page/:page?', async (req, res) => {      // TODO Exercise 1.2b
     let page = parseInt(req.params.page);
     if(!page) page = 0;
     if(page >= 0)
-      res.json(getMoviesPage(page));
+      res.json(await Promise.all(getMoviesPage(page).map(async m => {
+        m.reviews = getMovieReviews(m.id);
+        m.directors = await getMovieDirectors(m.id);
+        return m;
+      })));
     else
       res.status(400).send('Invalid page number');
 });

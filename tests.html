@@ -1,136 +1,166 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta charset="UTF-8">
-    <title>Tests</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-evenly;
-            align-content: center;
-            background-color: #656464;
-            color: white;
-            font-size: 2rem;
-        }
-        code {
-            font-size: 1.2rem;
-        }
-        button, input {
-            font-size: 1.5rem;
-        }
-        pre {
-            margin: .5rem;
-            font-size: 12px;
-            max-height: 60vh;
-            overflow: auto;
-            resize: both;
-            background-color: darkcyan;
-        }
-        .h-flex {
-            margin-top: 1rem;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-evenly;
-        }
-        .v-flex {
-            margin-top: 1rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-evenly;
-        }
-        p {
-            text-align: center;
-            font-size: 1.2rem;
-        }
-    </style>
-    <script defer>
-      window.getCookie = function(name) {
-        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-        if (match) return match[2];
+  <meta charset="UTF-8">
+  <title>Tests</title>
+  <style>
+      body {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-evenly;
+          align-content: center;
+          background-color: #656464;
+          color: white;
+          font-size: 2rem;
       }
-      async function movies(page = null) {
-        const restResp = (await (fetch('http://localhost:3000/movies'+(page ? '/page/'+page : '')).then(r => r.json())));
-        document.getElementById('restResponse').innerText = JSON.stringify(restResp, undefined, 2);
-        console.log(restResp);
+      code {
+          font-size: 1.2rem;
+      }
+      button, input {
+          font-size: 1.5rem;
+      }
+      pre {
+          margin: .5rem;
+          font-size: 12px;
+          max-height: 60vh;
+          overflow: auto;
+          resize: both;
+          background-color: darkcyan;
+      }
+      .h-flex {
+          margin-top: 1rem;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-evenly;
+      }
+      .v-flex {
+          margin-top: 1rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-evenly;
+      }
+      p {
+          text-align: center;
+          font-size: 1.2rem;
+      }
+  </style>
+  <script defer>
+    window.getCookie = function(name) {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      if (match) return match[2];
+    }
+    async function movies(page = null, genres = false, review = null, reviews = false, directors = false) {
+      document.getElementById('restResponse').innerText = 'Loading...';
+      document.getElementById('gqlResponse').innerText = 'Loading...';
 
-        const gqlResp = (await (fetch('http://localhost:4000/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: 'Basic '+getCookie('auth') },
-          body: JSON.stringify({
-            operationName: page === null ? 'highlighted' : 'movies',
-            query: `
+      if(review)
+        document.getElementById('restResponse').innerText = 'Not implemented';
+      else
+        fetch('http://localhost:3000/movies'+(page ? '/page/'+page : '')).then(r => r.json()).then(res => {
+          document.getElementById('restResponse').innerText = JSON.stringify(res, undefined, 2);
+          console.log(res);
+        });
+
+      const gqlResp = (await (fetch('http://localhost:4000/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Basic '+getCookie('auth') },
+        body: JSON.stringify({
+          operationName: review ? 'review' : (page === null ? 'highlighted' : 'movies'),
+          query: `
                 query highlighted{
                     highlightedMovies {
+                        id
                         title
-                        genres
+                        ${genres ? 'genres' : ''}
+                        ${reviews ? 'reviews { review when }' : ''}
+                        ${directors ? 'directors { __typename ... on ActorDirector { name } ... on NonActorDirector { name } }' : ''}
                         year
                     }
                 }
                 query movies($page: Int!) {
                     movies(page: $page) {
+                        id
                         title
-                        genres
+                        ${genres ? 'genres' : ''}
+                        ${reviews ? 'reviews { review when }' : ''}
+                        ${directors ? 'directors { __typename ... on ActorDirector { name } ... on NonActorDirector { name } }' : ''}
                         year
                     }
                 }
-            `,
-            variables: page === null ? { } : { page }
-          })
-        }).then(r => r.json())));
-        document.getElementById('gqlResponse').innerText = JSON.stringify(gqlResp, undefined, 2);
-        console.log(gqlResp);
-      }
-      async function auth() {
-        await (fetch('http://localhost:4000/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: 'Basic '+getCookie('auth') },
-          body: JSON.stringify({
-            query: `
-                {
-                  auth
+                mutation review($movieID: Int!, $review: String!) {
+                    reviewMovie(movieID: $movieID, review: $review) {
+                        id
+                        title
+                        reviews { review when }
+                    }
                 }
-            `
-          })
-        }).then(r => r.json()).then(r => alert('Username: ' + r.data.auth)));
-      }
-      window.addEventListener("DOMContentLoaded", function() {
-        document.getElementById('authForm').addEventListener("submit", function(e) {
-          e.preventDefault();
-          fetch('http://localhost:3000/auth?username='+document.getElementById('username').value);
+            `,
+          variables: review ? { movieID: 0, review } : (page === null ? { } : { page })
         })
+      }).then(r => r.json())));
+      document.getElementById('gqlResponse').innerText = JSON.stringify(gqlResp, undefined, 2);
+      console.log(gqlResp);
+    }
+    async function authInfo() {
+      fetch('http://localhost:4000/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', Authorization: 'Basic ' + getCookie('auth')},
+        body: JSON.stringify({
+          operationName: 'auth',
+          query: `query auth{ auth { username } }`
+        })
+      }).then(r => r.json()).then(r => {
+        if(r.errors) throw r.errors;
+        alert('Authenticated as: ' + r.data.auth.username);
+      }).catch(e => {
+        console.error(e);
+        alert('Please authenticate or uncomment auth in code\nERROR: '+e[0].message);
       });
-    </script>
+    }
+    window.addEventListener("DOMContentLoaded", function() {
+      document.getElementById('authForm').addEventListener("submit", async function (e) {
+        e.preventDefault();
+        fetch('http://localhost:3000/auth?username=' + document.getElementById('username').value).then(_ => alert('Authenticated!'));
+      })
+    });
+  </script>
 </head>
 <body>
-    <p>In this page you can send a request both to GraphQL and REST.</p>
-    <p>In DEV TOOLS (network tab) you can see how requests are made.</p>
+<p>In this page you can send a request both to GraphQL and REST.</p>
+<p>In DEV TOOLS (network tab) you can see how requests are made.</p>
 
-    <h3>REST requests</h3>
-    <div class="h-flex">
-        <button onclick="movies()">Movies</button>
-        <button onclick="movies(1)">Movies page 1</button>
-    </div>
-    <div class="h-flex">
-        <div>
-            <h6>REST</h6>
-            <pre id="restResponse"></pre>
-        </div>
-        <div>
-            <h6>GraphQL</h6>
-            <pre id="gqlResponse"></pre>
-        </div>
-    </div>
+<h3>REST requests</h3>
+<div>
+  <ul>
+    <li><button onclick="movies()">Highlighted movies</button></li>
+    <li><button onclick="movies(1)">Movies page 1 (no genres)</button></li>
+    <li><button onclick="movies(null, true)">Movies genres</button></li>
+    <li><button onclick="movies(null, false, 'Test review')">Test review (to movie 0)</button></li>
+    <li><button onclick="movies(null, false, null, true)">Movies reviews</button></li>
+    <li><button onclick="movies(2, false, null, false, true)">Movies directors</button></li>
+    <li><button onclick="authInfo()">Get auth info</button></li>
+  </ul>
+</div>
+<div class="h-flex">
+  <div>
+    <h6>REST</h6>
+    <pre id="restResponse"></pre>
+  </div>
+  <div>
+    <h6>GraphQL</h6>
+    <pre id="gqlResponse"></pre>
+  </div>
+</div>
 
-    <h3>Authentication</h3>
+<h3>Authentication</h3>
 
-    <div class="h-flex">
-        <form id="authForm" onsubmit="auth()">
-            <label for="username">Authentication:</label>
-            <input id="username" required placeholder="Username..."/>
-            <button type="submit">>Get auth username</button>
-        </form>
-    </div>
+<div class="h-flex">
+  <form id="authForm">
+    <label for="username">Authentication:</label>
+    <input id="username" required placeholder="Username..."/>
+    <button type="submit">Authenticate!</button>
+  </form>
+</div>
 
 </body>
 </html>

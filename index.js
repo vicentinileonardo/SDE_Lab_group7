@@ -2,7 +2,7 @@ const { ApolloServer } = require('apollo-server');
 const { ApolloServerPluginLandingPageLocalDefault } = require('apollo-server-core');
 const { getAuthContext } = require('./auth');
 
-const SKIP_AUTH = true;
+const SKIP_AUTH = false;
 
 const server = new ApolloServer({
   typeDefs: require('./schema'),

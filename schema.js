@@ -96,6 +96,7 @@ const schema = `
     }
     
     type Movie {
+        id: ID!
         title: String!
         cast: [Actor!]!
         year: Int!

@@ -18,7 +18,7 @@ module.exports = {
   },
   Movie: {
     directors: movie => getMovieDirectors(movie.id),
-      reviews: movie => getMovieReviews(movie.id)
+    reviews: movie => getMovieReviews(movie.id)
   },
   Query: {
     highlightedMovies: getHighlightedMovies,                  // TODO Exercise 1.1
@@ -26,10 +26,13 @@ module.exports = {
       if(page < 0) throw new Error('Invalid page number');    // TODO Exercise 1.2a
       return getMoviesPage(page);
     },
-      auth: (_, __, context) => ({                            // TODO Mini-assignment 4
-      username: context.username,
-      secretWord: context.secretWord
-    })
+    auth: (_, __, context) => {                               // TODO Mini-assignment 4
+      if(!context.username)  throw new Error('User not authenticated');
+      return {
+        username: context.username,
+        secretWord: context.secretWord
+      };
+    }
   },
   Mutation: {
     reviewMovie: (_, params) => {                             // TODO Exercise 2
