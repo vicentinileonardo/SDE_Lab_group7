@@ -21,7 +21,7 @@ module.exports = {
         }
       });
 
-    const auths = JSON.parse(readFileSync('./auths.json').toString());
+    const auths = JSON.parse(readFileSync('./libs/auth/auths.json').toString());
     const username = auths[+userAuth[1]];
 
     if(!username)
