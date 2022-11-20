@@ -28,7 +28,7 @@ app.get('/movies', async (req, res) => {
   })));
 });
 
-app.get('/movies/page/:page?', async (req, res) => {      // TODO Exercise 1.2b
+app.get('/movies/page/:page?', async (req, res) => {    
     let page = parseInt(req.params.page);
     if(!page) page = 0;
     if(page >= 0)
