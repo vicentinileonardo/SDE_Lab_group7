@@ -2,7 +2,7 @@ const { ApolloServer } = require('apollo-server');
 const { ApolloServerPluginLandingPageLocalDefault } = require('apollo-server-core');
 const { getAuthContext } = require('./libs/auth/auth');
 
-const SKIP_AUTH = false;
+const SKIP_AUTH = true;
 
 const server = new ApolloServer({
   typeDefs: require('./GraphQL/schema'),
@@ -12,10 +12,11 @@ const server = new ApolloServer({
   plugins: [
     ApolloServerPluginLandingPageLocalDefault({ embed: true }),
   ],
-  context: ({ req }) => {  // TODO Mini-assignment 1
+  // TODO Mini-assignment 1
+  /*context: ({ req }) => {  
     if(SKIP_AUTH) return { };
     return getAuthContext(req);
-  },
+  },*/
 });
 
 server.listen(4000).then(({ url }) => {

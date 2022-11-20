@@ -9,39 +9,32 @@ const {
 const { GraphQLScalarType } = require('graphql/type');
 
 module.exports = {
-  Director: {
+  // Uncomment for Exercise 3.3
+  /*Director: {
     __resolveType: director => {
       if (!director._typename)
         director._typename = 'ActorDirector';
       return director._typename;
     }
-  },
+  },*/
   Movie: {
-    directors: movie => getMovieDirectors(movie.id),
+    // TODO Exercise 3.3
     reviews: movie => getMovieReviews(movie.id)
   },
   Query: {
-    highlightedMovies: getHighlightedMovies,                  // TODO Exercise 1.1
-      movies: (_, { page }) => {
-      if(page < 0) throw new Error('Invalid page number');    // TODO Exercise 1.2a
-      return getMoviesPage(page);
-    },
-    auth: (_, __, context) => {                               // TODO Mini-assignment 4
+    // TODO Exercise 1.1
+    // TODO Exercise 1.2
+    // TODO Mini-assignment 4
+    /*auth: (_, __, context) => {                               
       if(!context.username)  throw new Error('User not authenticated');
       return {
         username: context.username,
         secretWord: context.secretWord
       };
-    }
+    }*/
   },
   Mutation: {
-    reviewMovie: (_, params) => {                             // TODO Exercise 2
-      newMovieReview(params);
-      return {                                                // TODO Exercise 2b
-        ...getMovie(params.movieID),
-        reviews: getMovieReviews(params.movieID)
-      };
-    }
+    // TODO Exercise 2
   },
   Date: new GraphQLScalarType({
     name: 'Date',
