@@ -107,7 +107,7 @@
         headers: {'Content-Type': 'application/json', Authorization: 'Basic ' + getCookie('auth')},
         body: JSON.stringify({
           operationName: 'auth',
-          query: `query auth{ auth { username } }`
+          query: `query auth{ auth { username, secretWord } }`
         })
       }).then(r => r.json()).then(r => {
         if(r.errors) throw r.errors;
