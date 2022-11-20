@@ -5,7 +5,7 @@ const {
   getMoviesPage,
   newMovieReview,
   getMovie
-} = require('./movies');
+} = require('../libs/movies/movies');
 const { GraphQLScalarType } = require('graphql/type');
 
 module.exports = {

@@ -59,12 +59,12 @@ const NON_ACTOR_DIRECTORS = [
   },
 ];
 
-const reviews = JSON.parse(readFileSync('./reviews.json').toString());
+const reviews = JSON.parse(readFileSync('./libs/movies/reviews.json').toString());
 for (const k in reviews) reviews[k] = reviews[k].map(r => ({ review: r.review, when: new Date(r.when) }));
 
 let movies, genres = {}, directors = [];
 if(!movies) {
-  movies = JSON.parse(readFileSync('./movies.json').toString()).reverse();
+  movies = JSON.parse(readFileSync('./libs/movies/movies.json').toString()).reverse();
   for (let i = 0; i < movies.length; i++) {
 
     movies[i].id = i;

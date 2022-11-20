@@ -1,12 +1,12 @@
 const { ApolloServer } = require('apollo-server');
 const { ApolloServerPluginLandingPageLocalDefault } = require('apollo-server-core');
-const { getAuthContext } = require('./auth');
+const { getAuthContext } = require('./libs/auth/auth');
 
 const SKIP_AUTH = false;
 
 const server = new ApolloServer({
-  typeDefs: require('./schema'),
-  resolvers: require('./resolvers'),
+  typeDefs: require('./GraphQL/schema'),
+  resolvers: require('./GraphQL/resolvers'),
   csrfPrevention: true,
   cache: 'bounded',
   plugins: [
@@ -22,4 +22,4 @@ server.listen(4000).then(({ url }) => {
   console.log(`Apollo ready at ${url}`);
 });
 
-require('./expressApp')();
+require('./express_app')();
