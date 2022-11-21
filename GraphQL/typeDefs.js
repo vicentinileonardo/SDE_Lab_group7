@@ -12,7 +12,7 @@ const directorFields = `
     directedMovies: [Movie!]!
 `
 
-const schema = `
+const typeDefs = `
     scalar Datetime
     scalar Date
     
@@ -121,4 +121,4 @@ const schema = `
         reviewMovie(movieID: Int!, review: String!): Movie!
     }
 `
-module.exports = schema;
+module.exports = typeDefs;
