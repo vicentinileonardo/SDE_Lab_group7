@@ -2,8 +2,6 @@ const { ApolloServer } = require('apollo-server');
 const { ApolloServerPluginLandingPageLocalDefault } = require('apollo-server-core');
 const { getAuthContext } = require('./libs/auth/auth');
 
-const SKIP_AUTH = true;
-
 const server = new ApolloServer({
   typeDefs: require('./GraphQL/typeDefs'),
   resolvers: require('./GraphQL/resolvers'),
@@ -13,8 +11,7 @@ const server = new ApolloServer({
     ApolloServerPluginLandingPageLocalDefault({ embed: true }),
   ],
   // TODO Mini-assignment 1
-  /*context: ({ req }) => {  
-    if(SKIP_AUTH) return { };
+  /*context: ({ req }) => {
     return getAuthContext(req);
   },*/
 });
