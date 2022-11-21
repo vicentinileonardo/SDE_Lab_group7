@@ -5,7 +5,7 @@ const { getAuthContext } = require('./libs/auth/auth');
 const SKIP_AUTH = true;
 
 const server = new ApolloServer({
-  typeDefs: require('./GraphQL/schema'),
+  typeDefs: require('./GraphQL/typeDefs'),
   resolvers: require('./GraphQL/resolvers'),
   csrfPrevention: true,
   cache: 'bounded',
