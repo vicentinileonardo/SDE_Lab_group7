@@ -1,23 +1,20 @@
-const { ApolloServer } = require('apollo-server');
-const { ApolloServerPluginLandingPageLocalDefault } = require('apollo-server-core');
+const { ApolloServer } = require('@apollo/server');
+const { startStandaloneServer } = require('@apollo/server/standalone');
 const { getAuthContext } = require('./libs/auth/auth');
 
 const server = new ApolloServer({
   typeDefs: require('./GraphQL/typeDefs'),
-  resolvers: require('./GraphQL/resolvers'),
-  csrfPrevention: true,
-  cache: 'bounded',
-  plugins: [
-    ApolloServerPluginLandingPageLocalDefault({ embed: true }),
-  ],
-  // TODO Mini-assignment 1
-  /*context: ({ req }) => {
-    return getAuthContext(req);
-  },*/
+  resolvers: require('./GraphQL/resolvers')
 });
 
-server.listen(4000).then(({ url }) => {
-  console.log(`Apollo ready at ${url}`);
+startStandaloneServer(server, { 
+    listen: { port: 4000 },
+    // TODO Mini-assignment 1
+    /*context: ({ req }) => {
+      return getAuthContext(req);
+    }*/
+  }).then(({ url }) => { 
+    console.log(`Apollo ready at ${url}`); 
 });
 
 require('./express_app')();
