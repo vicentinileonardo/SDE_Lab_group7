@@ -1,12 +1,10 @@
 ## Commands
-Start dev sever: both GraphQL and REST (nodemon):
 
-`
-npm run dev
-`
+- Install Visual Studio Code (or any other code editor)
 
-Start sever (node):
+- Clone the github repository
+    $ git clone https://github.com/dpdani/sde-rest-advanced.git -b no_solution
 
-`
-npm run start
-`
+- Install node
+
+$ npm install
