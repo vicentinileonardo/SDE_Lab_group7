@@ -6,5 +6,5 @@
     $ git clone https://github.com/dpdani/sde-rest-advanced.git -b no_solution
 
 - Install node
-
-$ npm install
+    $ apt-get install nodejs
+    $ npm install
