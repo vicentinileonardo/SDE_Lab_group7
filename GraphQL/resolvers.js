@@ -38,14 +38,14 @@ module.exports = {
   },
   Date: new GraphQLScalarType({
     name: 'Date',
-    parseValue: value => new Date(+value), // value from the client
-    serialize: value => value.toISOString().substring(0, 10), // value sent as variable
-    parseLiteral: ast => new Date(+ast) // value sent as inline value
+    parseValue: value => new Date(value), // value from the client
+    parseLiteral: ({ value }) => new Date(value), // value sent as inline value
+    serialize: value => value.toISOString().substring(0, 10) // value sent as variable
   }),
     Datetime: new GraphQLScalarType({
     name: 'Datetime',
-    parseValue: value => new Date(+value), // value from the client
-    serialize: value => value.toISOString(), // value sent as variable
-    parseLiteral: ast => new Date(+ast) // value sent as inline value
+    parseValue: value => new Date(value), // value from the client
+    parseLiteral: ({ value }) => new Date(value), // value sent as inline value
+    serialize: value => value.toISOString() // value sent as variable
   })
 };
