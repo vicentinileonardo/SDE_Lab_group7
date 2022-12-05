@@ -37,10 +37,7 @@ module.exports = {
   Mutation: {
     reviewMovie: (_, params) => {                             // TODO Exercise 2
       newMovieReview(params);
-      return {                                                // TODO Exercise 2b
-        ...getMovie(params.movieID),
-        reviews: getMovieReviews(params.movieID)
-      };
+      return getMovie(params.movieID);
     }
   },
   Date: new GraphQLScalarType({
