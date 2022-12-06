@@ -31,6 +31,6 @@ module.exports = {
           http: { status: 401 },
         }
       });
-    return auths ? { username, secretWord: 'BaNaNa!' } : null;
+    return auths ? { username, secretWord: '7BaNaNaS!' } : null;
   }
 };
