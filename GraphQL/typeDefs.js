@@ -109,6 +109,7 @@ const typeDefs = `
     type Auth {                                                                                                         # TODO Mini-assignment 2
         username: String!
         secretWord: String!
+        authKey: String!
     }
     
     type Query {

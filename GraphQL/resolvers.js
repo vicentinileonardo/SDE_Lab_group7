@@ -4,7 +4,7 @@ const {
   getHighlightedMovies,
   getMoviesPage,
   newMovieReview,
-  getMovie
+  getMovie, reviews
 } = require('../libs/movies/movies');
 const { GraphQLScalarType } = require('graphql/type');
 
@@ -30,15 +30,16 @@ module.exports = {
       if(!context.username)  throw new Error('User not authenticated');
       return {
         username: context.username,
-        secretWord: context.secretWord
+        secretWord: context.secretWord,
+        authKey: context.authKey
       };
     }
   },
   Mutation: {
-    reviewMovie: (_, params) => {                             // TODO Exercise 2
-      newMovieReview(params);
-      return getMovie(params.movieID);
-    }
+    reviewMovie: async (_, { movieID, review }) => {          // TODO Exercise 2
+      await newMovieReview({ movieID, review });
+      return getMovie(movieID);
+     }
   },
   Date: new GraphQLScalarType({
     name: 'Date',

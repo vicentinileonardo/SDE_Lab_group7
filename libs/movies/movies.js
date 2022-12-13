@@ -97,17 +97,18 @@ if(!movies) {
 const PAGE_SIZE = 20;
 
 module.exports = {
+  reviews,
   getMovie: movieID => movies[movieID],
   getHighlightedMovies: _ => movies.slice(0, 10),
   getMoviesPage: page => movies.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE),
   getAllGenres: _ => Object.keys(genres).map(g => g).join('\n'),
   getMovieDirectors: movieID => new Promise(r => setTimeout(_ => r(directors[movieID]), 2000)),
   getMovieReviews: movieID => reviews[movieID] || [],
-  newMovieReview: ({ movieID, review }) => {
+  newMovieReview: async ({ movieID, review }) => {
     if(!movies[movieID]) throw new Error('Invalid movieID: ' + movieID);
     if(!review || review.length === 0) throw new Error('Invalid review: ' + review);
     if(!reviews[movieID]) reviews[movieID] = [];
     reviews[movieID].push({ review, when: new Date() });
-    writeFile('./reviews.json', JSON.stringify(reviews), err => console.log(err));
+    writeFile('./libs/movies/reviews.json', JSON.stringify(reviews), { flag: "w" }, (err) => { if(err) console.log(err) });
   }
 };

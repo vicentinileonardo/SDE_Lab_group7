@@ -107,11 +107,11 @@
         headers: {'Content-Type': 'application/json', Authorization: 'Basic ' + getCookie('auth')},
         body: JSON.stringify({
           operationName: 'auth',
-          query: `query auth{ auth { username, secretWord } }`
+          query: `query auth{ auth { username, secretWord, authKey } }`
         })
       }).then(r => r.json()).then(r => {
         if(r.errors) throw r.errors;
-        alert('Authenticated as: ' + r.data.auth.username);
+        prompt('Authenticated as: ' + r.data.auth.username + '\nCopy the following Auth Key', 'Basic ' + r.data.auth.authKey);
       }).catch(e => {
         console.error(e);
         alert('Please authenticate or uncomment auth in code\nERROR: '+e[0].message);
