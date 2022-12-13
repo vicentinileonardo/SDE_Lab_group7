@@ -4,7 +4,7 @@ const {
   getHighlightedMovies,
   getMoviesPage,
   newMovieReview,
-  getMovie
+  getMovie, reviews
 } = require('../libs/movies/movies');
 const { GraphQLScalarType } = require('graphql/type');
 
@@ -29,7 +29,8 @@ module.exports = {
       if(!context.username)  throw new Error('User not authenticated');
       return {
         username: context.username,
-        secretWord: context.secretWord
+        secretWord: context.secretWord,
+        authKey: context.authKey
       };
     }*/
   },
@@ -44,7 +45,7 @@ module.exports = {
   }),
     Datetime: new GraphQLScalarType({
     name: 'Datetime',
-    parseValue: value => new Date(value), // value from the client
+    parseValue: value => new Date(+value), // value from the client
     parseLiteral: ({ value }) => new Date(value), // value sent as inline value
     serialize: value => value.toISOString() // value sent as variable
   })

@@ -92,11 +92,11 @@ const typeDefs = `
         # TODO Exercise 3.3
     }
     
-    # TODO Mini-assignment 2
-    #type Auth {                                                                                                         
-        #username: String!
-        #secretWord: String!
-    #}
+    type Auth {                                                                                                         # TODO Mini-assignment 2
+        username: String!
+        secretWord: String!
+        authKey: String!
+    }
     
     type Query {
         highlightedMovies: [Movie!]!,
